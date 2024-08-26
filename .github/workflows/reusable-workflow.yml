@@ -1,0 +1,37 @@
+# .github/workflows/reusable-workflow.yml
+name: Reusable Workflow
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'main'
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+    secrets:
+      API_TOKEN:
+        description: 'API Token'
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ inputs.branch }}
+
+    - name: Run deployment script
+      run: |
+        echo "Deploying to ${{ inputs.environment }} environment"
+        # Example command using the secret
+        curl -H "Authorization: Bearer ${{ secrets.API_TOKEN }}" https://api.example.com/deploy
+
+    - name: Confirm deployment
+      run: echo "Deployment to ${{ inputs.environment }} completed!"
